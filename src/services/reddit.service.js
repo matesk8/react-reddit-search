@@ -1,7 +1,12 @@
 import { fetchRequest } from '../utils/fetch.util';
+import { v4 as uuidv4 } from 'uuid';
 
-const fetchSubReddit = ({ subRedditName, authToken }) => fetchRequest({
-  url: `https://oauth.reddit.com/r/${subRedditName}/about.json`,
+const searchForSubReddit = ({ subRedditName, authToken }) => fetchRequest({
+  url: 'https://oauth.reddit.com/subreddits/search.json',
+  parameters: {
+    q: subRedditName,
+    search_query_id: uuidv4(),
+  },
   options: {
     headers: {
       Authorization: `bearer ${authToken}`
@@ -9,8 +14,8 @@ const fetchSubReddit = ({ subRedditName, authToken }) => fetchRequest({
   }
 });
 
-const fetchSubRedditPosts = ({ subRedditName, authToken }) => fetchRequest({
-  url: `https://oauth.reddit.com/r/${subRedditName}/new.json`,
+const fetchSubRedditPosts = ({ subRedditUrl, authToken }) => fetchRequest({
+  url: `https://oauth.reddit.com${subRedditUrl}new.json`,
   parameters: { limit: 10 },
   options: {
     headers: {
@@ -20,6 +25,6 @@ const fetchSubRedditPosts = ({ subRedditName, authToken }) => fetchRequest({
 });
 
 export {
-  fetchSubReddit,
   fetchSubRedditPosts,
+  searchForSubReddit,
 };
