@@ -4,7 +4,10 @@ const setLocalStorageValue = (key, value) => {
 
 const getLocalStorageValue = (key) => window.localStorage.getItem(key);
 
+const clearLocalStorageValue = (key) => window.localStorage.removeItem(key);
+
 export {
   setLocalStorageValue,
   getLocalStorageValue,
+  clearLocalStorageValue,
 };
