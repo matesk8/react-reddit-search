@@ -3,7 +3,7 @@ import './SubRedditHeader.scss';
 import PropTypes from 'prop-types';
 import { getYearDifferenceFromNow, unixTimeStampToMilliseconds } from '../../utils/time.util';
 
-class SubRedditHeader extends React.Component {
+class SubRedditHeader extends React.PureComponent {
   render() {
     const { subReddit } = this.props;
     const subRedditData = subReddit.data;
