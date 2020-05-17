@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { getHashParameters } from '../../utils/hashParser.util';
 import { fetchSubRedditPosts, searchForSubReddit } from '../../services/reddit.service';
 import SearchForm from '../../components/SearchForm/SearchForm';
+import SubRedditHeader from '../../components/SubRedditHeader/SubRedditHeader';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -10,6 +11,8 @@ class HomePage extends React.Component {
     this.state = {
       redditAccessToken: null,
       subRedditName: '',
+      subRedditFound: false,
+      firstMatchingSubReedit: null,
     };
 
     this.handleSubRedditNameChange = this.handleSubRedditNameChange.bind(this);
@@ -43,7 +46,7 @@ class HomePage extends React.Component {
 
     const responseList = (response.data || {}).children;
     if (!(responseList || []).length) {
-      console.log('No results found'); // TODO
+      this.setState({ subRedditFound: false });
       return;
     }
 
@@ -53,13 +56,17 @@ class HomePage extends React.Component {
       authToken: redditAccessToken,
       subRedditUrl,
     });
+    this.setState({
+      subRedditFound: true,
+      firstMatchingSubReedit,
+    });
 
     console.log('firstMatchingSubReedit', firstMatchingSubReedit);
     console.log('subRedditPosts', subRedditPosts);
   }
 
   render() {
-    const { subRedditName } = this.state;
+    const { subRedditName, subRedditFound, firstMatchingSubReedit } = this.state;
     return (
       <>
         <SearchForm
@@ -67,6 +74,13 @@ class HomePage extends React.Component {
           onSearchForSubReddit={this.handleSearchForSubReddit}
           subRedditName={subRedditName}
         />
+        {
+          firstMatchingSubReedit && subRedditFound && (
+            <SubRedditHeader
+              subReddit={firstMatchingSubReedit}
+            />
+          )
+        }
       </>
     );
   }
