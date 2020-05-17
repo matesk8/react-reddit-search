@@ -25,15 +25,26 @@ class SubRedditHeader extends React.Component {
         <div
           className="subreddit-header"
         >
-          <label className="subreddit-header__label">
-            { `${subRedditData.url}: ${subRedditData.title}` }
-          </label>
-          <div className="subreddit-header__description">
-            {subRedditData.public_description}
-          </div>
-          <p className="subreddit-header__sub-text">
-            { `${subscribersText}${ageText}` }
-          </p>
+          <span className="subreddit-header__left-side">
+            {subRedditData.icon_img && (
+              <img
+                className="subreddit-header__icon"
+                src={subRedditData.icon_img}
+                alt="Reddit icon"
+              />
+            )}
+          </span>
+          <span className="subreddit-header__right-side">
+            <label className="subreddit-header__label">
+              { `${subRedditData.url}: ${subRedditData.title}` }
+            </label>
+            <div className="subreddit-header__description">
+              {subRedditData.public_description}
+            </div>
+            <p className="subreddit-header__sub-text">
+              { `${subscribersText}${ageText}` }
+            </p>
+          </span>
         </div>
       </>
     );
