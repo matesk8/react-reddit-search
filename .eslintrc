@@ -4,7 +4,12 @@
     "airbnb"
   ],
   "rules": {
+    "class-methods-use-this": 0,
     "react/prefer-stateless-function": 0,
+    "comma-dangle": 0,
+    "import/order": 0,
+    "react/jsx-props-no-spreading": 0,
+    "import/prefer-default-export": 0,
     "semi": ["error", "always"],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
   }
