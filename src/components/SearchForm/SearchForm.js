@@ -2,7 +2,7 @@ import React from 'react';
 import './SearchForm.scss';
 import PropTypes from 'prop-types';
 
-class SearchForm extends React.Component {
+class SearchForm extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
