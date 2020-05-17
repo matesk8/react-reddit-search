@@ -2,11 +2,14 @@ import React from 'react';
 import { redditConfig } from '../../config/reddit.config';
 import { generateQueryString } from '../../utils/queryGenerator.util';
 import PropTypes from 'prop-types';
+import { clearLocalStorageValue } from '../../utils/localStorage.util';
+import { localStorageKeys } from '../../constants/localStorage.constants';
 
 class LoginPage extends React.Component {
   constructor(props) {
     super(props);
     this.onLoginClick = this.onLoginClick.bind(this);
+    clearLocalStorageValue(localStorageKeys.sessionId);
   }
 
   onLoginClick() {
