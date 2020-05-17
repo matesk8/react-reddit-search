@@ -1,6 +1,6 @@
 import { generateQueryString } from './queryGenerator.util';
 
-const fetchRequest = async (url, parameters, options) => {
+const fetchRequest = async ({ url, parameters, options }) => {
   const query = generateQueryString(parameters);
   const requestURL = parameters ? `${url}?${query}` : url;
 
