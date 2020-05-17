@@ -1,14 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { fetchRequest } from '../../utils/fetch.util';
 import { getHashParameters } from '../../utils/hashParser.util';
+import { fetchSubRedditPosts, searchForSubReddit } from '../../services/reddit.service';
+import SearchForm from '../../components/SearchForm/SearchForm';
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       redditAccessToken: null,
+      subRedditName: '',
     };
+
+    this.handleSubRedditNameChange = this.handleSubRedditNameChange.bind(this);
+    this.handleSearchForSubReddit = this.handleSearchForSubReddit.bind(this);
   }
 
   componentDidMount() {
@@ -21,38 +26,47 @@ class HomePage extends React.Component {
     this.setState({
       redditAccessToken: accessToken,
     });
-    this.fetchData(accessToken);
   }
 
-  async fetchData(authToken) {
-    const subReddit = await fetchRequest( // TODO: use named parameters
-      'https://oauth.reddit.com/r/javascript/about.json',
-      null,
-      {
-        headers: {
-          Authorization: `bearer ${authToken}`
-        },
-      }
-    );
+  handleSubRedditNameChange(name) {
+    this.setState({
+      subRedditName: name,
+    });
+  }
 
-    const subRedditPosts = await fetchRequest(
-      'https://oauth.reddit.com/r/javascript/new.json', {
-        limit: 10,
-      },
-      {
-        headers: {
-          Authorization: `bearer ${authToken}`
-        },
-      }
-    );
-    console.log('subReddit', subReddit);
+  async handleSearchForSubReddit() {
+    const { redditAccessToken, subRedditName } = this.state;
+    const response = await searchForSubReddit({
+      authToken: redditAccessToken,
+      subRedditName,
+    });
+
+    const responseList = (response.data || {}).children;
+    if (!(responseList || []).length) {
+      console.log('No results found'); // TODO
+      return;
+    }
+
+    const firstMatchingSubReedit = responseList[0];
+    const subRedditUrl = firstMatchingSubReedit.data.url;
+    const subRedditPosts = await fetchSubRedditPosts({
+      authToken: redditAccessToken,
+      subRedditUrl,
+    });
+
+    console.log('firstMatchingSubReedit', firstMatchingSubReedit);
     console.log('subRedditPosts', subRedditPosts);
   }
 
   render() {
+    const { subRedditName } = this.state;
     return (
       <>
-        Home
+        <SearchForm
+          onSubRedditNameChange={this.handleSubRedditNameChange}
+          onSearchForSubReddit={this.handleSearchForSubReddit}
+          subRedditName={subRedditName}
+        />
       </>
     );
   }
