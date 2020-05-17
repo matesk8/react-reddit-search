@@ -7,7 +7,7 @@ const getHashParameters = (hashValue) => {
     const [key, value] = item.split('=');
     return {
       ...hashMap,
-      [key]: value,
+      [key]: decodeURIComponent(value),
     };
   }, {});
 };
