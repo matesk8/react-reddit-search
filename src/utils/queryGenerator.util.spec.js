@@ -12,6 +12,16 @@ describe('generateQueryString', () => {
     expect(result).toEqual(expectedResult);
   });
 
+  test('it will ignore empty parameters', () => {
+    const queryObject = {
+      numberValue: 123,
+      textValue: null,
+    };
+    const expectedResult = 'numberValue=123';
+    const result = generateQueryString(queryObject);
+    expect(result).toEqual(expectedResult);
+  });
+
   test('it will return an empty string on a null value', () => {
     const result = generateQueryString(null);
     expect(result).toEqual('');
