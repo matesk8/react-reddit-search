@@ -1,8 +1,10 @@
-const generateQueryString = (queryObject) => (
-  Object.entries(queryObject || {})
+const generateQueryString = (queryObject) => {
+  const isValidQueryObject = typeof queryObject === 'object' && queryObject !== null;
+  if (!isValidQueryObject) { return ''; }
+  return Object.entries(queryObject)
     .map(([key, value]) => `${key}=${value}`)
-    .join('&')
-);
+    .join('&');
+};
 
 export {
   generateQueryString,
