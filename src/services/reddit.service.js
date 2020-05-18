@@ -14,9 +14,13 @@ const searchForSubReddit = ({ subRedditName, authToken }) => fetchRequest({
   }
 });
 
-const fetchSubRedditPosts = ({ subRedditUrl, authToken }) => fetchRequest({
+const fetchSubRedditPosts = ({ subRedditUrl, after, authToken }) => fetchRequest({
   url: `https://oauth.reddit.com${subRedditUrl}new.json`,
-  parameters: { limit: 10 },
+  parameters: {
+    limit: 10,
+    raw_json: 1,
+    after,
+  },
   options: {
     headers: {
       Authorization: `bearer ${authToken}`
