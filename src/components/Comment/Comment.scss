@@ -1,0 +1,68 @@
+.comment-item {
+  display: flex;
+  border-radius: 10px;
+  margin: 0 20px 20px 20px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.comment-item__left-side,
+.comment-item__right-side {
+  overflow: hidden;
+  padding: 5px 10px;
+}
+
+.comment-item__points {
+  font-weight: 600;
+}
+
+.comment-item__left-side {
+  min-width: 70px;
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #66beff;
+  color: #fff;
+}
+
+.comment-item__author {
+  color: #787C7E;
+  font-size: 12px;
+}
+
+.comment-item__title {
+  font-weight: 500;
+  margin: 8px 0;
+}
+
+.comment-item__link-wrapper {
+  max-width: 200px;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #3f9ade;
+}
+
+.comment-item__link {
+  font-size: 12px;
+  text-decoration: none;
+
+  &:link,
+  &:visited,
+  &:active {
+    color: #3f9ade;
+  }
+}
+
+.comment-item__self-text {
+  max-height: 70px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+
+  p {
+    margin: 0;
+    padding: 1px 0;
+  }
+}
