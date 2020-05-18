@@ -7,7 +7,13 @@ const getYearDifferenceFromNow = (date) => {
 
 const unixTimeStampToMilliseconds = (unixTimeStamp) => new Date(unixTimeStamp * 1000);
 
+const getMinutesDifference = (date1, date2) => {
+  const difference = date1 - date2;
+  return Math.abs(Math.round(((difference % 86400000) % 3600000) / 60000));
+};
+
 export {
   getYearDifferenceFromNow,
   unixTimeStampToMilliseconds,
+  getMinutesDifference,
 };
