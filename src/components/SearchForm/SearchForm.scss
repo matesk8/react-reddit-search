@@ -1,7 +1,11 @@
+@import '../../index';
+
 .search-form {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  background: #f3faff;
+  height: $search-from-height;
 }
 
 .search-form__label {
