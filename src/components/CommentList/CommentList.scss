@@ -52,4 +52,16 @@ $comment-list-padding: 15px;
     color: #212529;
     background-color: #e2e6ea;
   }
+
+  &--disabled {
+    cursor: default;
+    background: #e0e0e0;
+    color: #9c9c9c;
+
+    &:hover {
+      cursor: default;
+      background: #e0e0e0;
+      color: #9c9c9c;
+    }
+  }
 }

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import './CommentList.scss';
 import Comment from '../Comment/Comment';
 
+const classNames = require('classnames');
+
 class CommentList extends React.Component {
   constructor(props) {
     super(props);
@@ -21,7 +23,7 @@ class CommentList extends React.Component {
   }
 
   render() {
-    const { comments } = this.props;
+    const { comments, currentPage, isLastPage } = this.props;
     const commentItems = comments.children.map((comment) => (
       <Comment
         key={comment.data.id}
@@ -38,14 +40,22 @@ class CommentList extends React.Component {
         </div>
         <div className="comment-list__actions">
           <button
-            className="comment-list__button"
+            disabled={currentPage === 1}
+            className={classNames(
+              'comment-list__button',
+              { 'comment-list__button--disabled': currentPage === 1 }
+            )}
             type="button"
             onClick={this.loadPreviousComments}
           >
             Previous
           </button>
           <button
-            className="comment-list__button"
+            disabled={isLastPage}
+            className={classNames(
+              'comment-list__button',
+              { 'comment-list__button--disabled': isLastPage }
+            )}
             type="button"
             onClick={this.loadNextComments}
           >
@@ -61,6 +71,8 @@ CommentList.propTypes = {
   comments: PropTypes.object.isRequired,
   onLoadNextComments: PropTypes.func.isRequired,
   onLoadPreviousComments: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  isLastPage: PropTypes.bool.isRequired,
 };
 
 export default CommentList;

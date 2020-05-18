@@ -68,9 +68,6 @@ class HomePage extends React.Component {
       },
       currentPageSubRedditComments: subRedditComments,
     });
-
-    console.log('firstMatchingSubReedit', firstMatchingSubReedit);
-    console.log('subRedditComments', subRedditComments);
   }
 
   async onLoadPreviousComments() {
@@ -122,7 +119,9 @@ class HomePage extends React.Component {
       subRedditName,
       firstMatchingSubReedit,
       currentPageSubRedditComments,
+      currentPage,
     } = this.state;
+    const isLastPage = !(currentPageSubRedditComments.data || {}).after;
 
     return (
       <>
@@ -138,6 +137,8 @@ class HomePage extends React.Component {
             />
             <CommentList
               comments={currentPageSubRedditComments.data}
+              currentPage={currentPage}
+              isLastPage={isLastPage}
               onLoadNextComments={this.onLoadNextComments}
               onLoadPreviousComments={this.onLoadPreviousComments}
             />
