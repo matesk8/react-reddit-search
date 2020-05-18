@@ -1,19 +1,26 @@
 import React from 'react';
 import { redditConfig } from '../../config/reddit.config';
 import { generateQueryString } from '../../utils/queryGenerator.util';
-import PropTypes from 'prop-types';
-import { clearLocalStorageValue } from '../../utils/localStorage.util';
+import { clearLocalStorageValue, setLocalStorageValue } from '../../utils/localStorage.util';
 import { localStorageKeys } from '../../constants/localStorage.constants';
+import { v4 as uuidv4 } from 'uuid';
 
 class LoginPage extends React.Component {
   constructor(props) {
     super(props);
-    this.onLoginClick = this.onLoginClick.bind(this);
+    const sessionId = uuidv4();
+    this.state = {
+      sessionId,
+    };
+
     clearLocalStorageValue(localStorageKeys.sessionId);
+    clearLocalStorageValue(localStorageKeys.sessionStartTime);
+    setLocalStorageValue(localStorageKeys.sessionId, sessionId);
+    this.onLoginClick = this.onLoginClick.bind(this);
   }
 
   onLoginClick() {
-    const { sessionId } = this.props;
+    const { sessionId } = this.state;
     const url = 'https://www.reddit.com/api/v1/authorize';
     const parameters = generateQueryString({
       client_id: redditConfig.appId,
@@ -39,9 +46,5 @@ class LoginPage extends React.Component {
     );
   }
 }
-
-LoginPage.propTypes = {
-  sessionId: PropTypes.string.isRequired,
-};
 
 export default LoginPage;

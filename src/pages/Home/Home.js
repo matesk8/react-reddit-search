@@ -1,10 +1,13 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { getHashParameters } from '../../utils/hashParser.util';
 import { fetchSubRedditPosts, searchForSubReddit } from '../../services/reddit.service';
 import SearchForm from '../../components/SearchForm/SearchForm';
 import SubRedditHeader from '../../components/SubRedditHeader/SubRedditHeader';
 import CommentList from '../../components/CommentList/CommentList';
+import { getLocalStorageValue, setLocalStorageValue } from '../../utils/localStorage.util';
+import { localStorageKeys } from '../../constants/localStorage.constants';
+import PropTypes from 'prop-types';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -25,15 +28,34 @@ class HomePage extends React.Component {
   }
 
   componentDidMount() {
-    const { sessionId } = this.props;
-    const hashMap = getHashParameters(window.location.hash);
+    const { history, onSessionExpired } = this.props;
+    const cachedSessionId = getLocalStorageValue(localStorageKeys.sessionId);
+    const cachedSessionStartTime = getLocalStorageValue(localStorageKeys.sessionStartTime);
+    const sessionStartDate = cachedSessionStartTime ? new Date(cachedSessionStartTime) : new Date();
+    const hashMap = getHashParameters(window.location.hash || {});
     const accessToken = hashMap.access_token;
-    const isValidSession = hashMap.state === sessionId;
+    const authenticationError = hashMap.error;
+    const isValidSession = hashMap.state === cachedSessionId;
 
-    console.log('isValidSession', isValidSession); // TODO: log out otherwise
+    if (!cachedSessionStartTime) {
+      setLocalStorageValue(localStorageKeys.sessionStartTime, sessionStartDate);
+    }
+
+    if (!isValidSession || authenticationError) {
+      history.push('/login');
+    }
+
     this.setState({
       redditAccessToken: accessToken,
     });
+
+    const sessionExpiryTime = new Date(sessionStartDate.getTime());
+    sessionExpiryTime.setHours(sessionStartDate.getHours() + 1);
+    const timeUntilSessionExpiry = Math.abs(sessionExpiryTime - Date.now());
+    setTimeout(() => {
+      onSessionExpired();
+      history.push('/login');
+    }, timeUntilSessionExpiry);
   }
 
   handleSubRedditNameChange(name) {
@@ -61,6 +83,7 @@ class HomePage extends React.Component {
       authToken: redditAccessToken,
       subRedditUrl,
     });
+
     this.setState({
       firstMatchingSubReedit,
       subRedditCommentsMap: {
@@ -104,6 +127,7 @@ class HomePage extends React.Component {
       subRedditUrl: firstMatchingSubReedit.data.url,
       after: currentPageSubRedditComments.data.after,
     });
+
     this.setState({
       subRedditCommentsMap: {
         ...subRedditCommentsMap,
@@ -150,7 +174,7 @@ class HomePage extends React.Component {
 }
 
 HomePage.propTypes = {
-  sessionId: PropTypes.string.isRequired,
+  onSessionExpired: PropTypes.func.isRequired,
 };
 
 export default HomePage;

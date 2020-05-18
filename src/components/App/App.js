@@ -1,43 +1,51 @@
 import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import './App.scss';
 import { BrowserRouter as Router, Route, Switch, } from 'react-router-dom';
 import LoginPage from '../../pages/Login/Login';
 import HomePage from '../../pages/Home/Home';
-import { localStorageKeys } from '../../constants/localStorage.constants';
-import { getLocalStorageValue, setLocalStorageValue } from '../../utils/localStorage.util';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    const cachedSessionId = getLocalStorageValue(localStorageKeys.sessionId);
-    const sessionId = cachedSessionId || uuidv4();
+    this.showSessionExpiredNotification = this.showSessionExpiredNotification.bind(this);
+  }
 
-    this.state = { sessionId };
-    if (!cachedSessionId) {
-      setLocalStorageValue(localStorageKeys.sessionId, sessionId);
-    }
+  showSessionExpiredNotification() {
+    toast.info('Session Expired', {
+      position: 'bottom-center',
+      autoClose: 5000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+    });
   }
 
   render() {
-    const { sessionId } = this.state;
     return (
-      <Router>
-        <Switch>
-          <Route
-            path="/home"
-          >
-            <HomePage
-              sessionId={sessionId}
+      <>
+        <Router>
+          <ToastContainer />
+          <Switch>
+            <Route
+              path="/home"
+              render={(props) => (
+                <HomePage
+                  {...props}
+                  onSessionExpired={this.showSessionExpiredNotification}
+                />
+              )}
             />
-          </Route>
-          <Route path="/">
-            <LoginPage
-              sessionId={sessionId}
+            <Route
+              path="/"
+              render={(props) => <LoginPage {...props} />}
             />
-          </Route>
-        </Switch>
-      </Router>
+          </Switch>
+        </Router>
+      </>
     );
   }
 }
