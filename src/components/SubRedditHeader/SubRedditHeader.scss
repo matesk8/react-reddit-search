@@ -53,4 +53,9 @@
   display: inline-block;
   height: 72px;
   width: 72px;
+
+  &--svg {
+    background: #0079d3;
+    fill: #fff;
+  }
 }

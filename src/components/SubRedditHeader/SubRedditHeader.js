@@ -1,6 +1,7 @@
 import React from 'react';
 import './SubRedditHeader.scss';
 import PropTypes from 'prop-types';
+import { ReactComponent as SubRedditIcon } from '../../assets/subredditIcon.svg';
 import { getYearDifferenceFromNow, unixTimeStampToMilliseconds } from '../../utils/time.util';
 
 class SubRedditHeader extends React.PureComponent {
@@ -33,14 +34,21 @@ class SubRedditHeader extends React.PureComponent {
                 alt="Reddit icon"
               />
             )}
+            {!subRedditData.icon_img && (
+              <SubRedditIcon
+                className="subreddit-header__icon subreddit-header__icon--svg"
+              />
+            )}
           </span>
           <span className="subreddit-header__right-side">
             <label className="subreddit-header__label">
               {subRedditData.title}
             </label>
-            <div className="subreddit-header__description">
-              {subRedditData.public_description}
-            </div>
+            { subRedditData.public_description && (
+              <div className="subreddit-header__description">
+                {subRedditData.public_description}
+              </div>
+            )}
             <p className="subreddit-header__sub-text">
               { `${subscribersText}${ageText}` }
             </p>
