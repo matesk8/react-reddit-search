@@ -36,7 +36,7 @@ class SubRedditHeader extends React.PureComponent {
           </span>
           <span className="subreddit-header__right-side">
             <label className="subreddit-header__label">
-              { `${subRedditData.url}: ${subRedditData.title}` }
+              {subRedditData.title}
             </label>
             <div className="subreddit-header__description">
               {subRedditData.public_description}
