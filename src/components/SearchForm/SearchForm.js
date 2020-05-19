@@ -6,35 +6,35 @@ class SearchForm extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      subRedditName: '',
+      searchValue: '',
     };
 
-    this.onSubRedditNameChange = this.onSubRedditNameChange.bind(this);
-    this.onSearchForSubReddit = this.onSearchForSubReddit.bind(this);
+    this.onSearchValueChange = this.onSearchValueChange.bind(this);
+    this.onSearch = this.onSearch.bind(this);
   }
 
-  onSubRedditNameChange(event) {
-    const { onSubRedditNameChange } = this.props;
-    const subRedditName = event.target.value;
+  onSearchValueChange(event) {
+    const { onSearchValueChange } = this.props;
+    const searchValue = event.target.value;
     this.setState({
-      subRedditName,
+      searchValue,
     });
-    onSubRedditNameChange(subRedditName);
+    onSearchValueChange(searchValue);
   }
 
-  onSearchForSubReddit(event) {
+  onSearch(event) {
     event.preventDefault();
-    const { onSearchForSubReddit } = this.props;
-    onSearchForSubReddit();
+    const { onSearch } = this.props;
+    onSearch();
   }
 
   render() {
-    const { subRedditName } = this.state;
+    const { searchValue } = this.state;
     return (
       <>
         <form
           className="search-form"
-          onSubmit={this.onSearchForSubReddit}
+          onSubmit={this.onSearch}
         >
           <label
             className="search-form__label"
@@ -44,8 +44,8 @@ class SearchForm extends React.PureComponent {
           <input
             className="search-form__input"
             type="text"
-            value={subRedditName}
-            onChange={this.onSubRedditNameChange}
+            value={searchValue}
+            onChange={this.onSearchValueChange}
             placeholder="Enter Subreddit name..."
           />
           <button
@@ -61,8 +61,8 @@ class SearchForm extends React.PureComponent {
 }
 
 SearchForm.propTypes = {
-  onSubRedditNameChange: PropTypes.func.isRequired,
-  onSearchForSubReddit: PropTypes.func.isRequired,
+  onSearchValueChange: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
 };
 
 export default SearchForm;

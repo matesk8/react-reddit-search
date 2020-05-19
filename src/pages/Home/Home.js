@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
+import './Home.scss';
 import { getHashParameters } from '../../utils/hashParser.util';
 import { fetchSubRedditPosts, searchForSubReddit } from '../../services/reddit.service';
 import SearchForm from '../../components/SearchForm/SearchForm';
@@ -14,15 +15,16 @@ class HomePage extends React.Component {
     super(props);
     this.state = {
       redditAccessToken: null,
-      subRedditName: '', // TODO: rename to search value
+      searchValue: '',
       firstMatchingSubReedit: null,
       subRedditCommentsMap: {},
       currentPageSubRedditComments: {},
       currentPage: 1,
+      searchDispatched: false,
     };
 
-    this.handleSubRedditNameChange = this.handleSubRedditNameChange.bind(this);
-    this.handleSearchForSubReddit = this.handleSearchForSubReddit.bind(this);
+    this.onSearchValueChange = this.onSearchValueChange.bind(this);
+    this.onSearch = this.onSearch.bind(this);
     this.onLoadNextComments = this.onLoadNextComments.bind(this);
     this.onLoadPreviousComments = this.onLoadPreviousComments.bind(this);
   }
@@ -58,22 +60,25 @@ class HomePage extends React.Component {
     }, timeUntilSessionExpiry);
   }
 
-  handleSubRedditNameChange(name) {
+  onSearchValueChange(name) {
     this.setState({
-      subRedditName: name,
+      searchValue: name,
     });
   }
 
-  async handleSearchForSubReddit() {
-    const { redditAccessToken, subRedditName, currentPage } = this.state;
+  async onSearch() {
+    const { redditAccessToken, searchValue, currentPage } = this.state;
     const subRedditResponse = await searchForSubReddit({
       authToken: redditAccessToken,
-      subRedditName,
+      subRedditName: searchValue,
     });
 
     const subRedditList = (subRedditResponse.data || {}).children;
     if (!(subRedditList || []).length) {
-      this.setState({ firstMatchingSubReedit: null });
+      this.setState({
+        firstMatchingSubReedit: null,
+        searchDispatched: true,
+      });
       return;
     }
 
@@ -90,6 +95,7 @@ class HomePage extends React.Component {
         [currentPage]: subRedditComments
       },
       currentPageSubRedditComments: subRedditComments,
+      searchDispatched: true,
     });
   }
 
@@ -140,7 +146,7 @@ class HomePage extends React.Component {
 
   render() {
     const {
-      subRedditName,
+      searchDispatched,
       firstMatchingSubReedit,
       currentPageSubRedditComments,
       currentPage,
@@ -150,9 +156,8 @@ class HomePage extends React.Component {
     return (
       <>
         <SearchForm
-          onSubRedditNameChange={this.handleSubRedditNameChange}
-          onSearchForSubReddit={this.handleSearchForSubReddit}
-          subRedditName={subRedditName}
+          onSearchValueChange={this.onSearchValueChange}
+          onSearch={this.onSearch}
         />
         {firstMatchingSubReedit && (
           <>
@@ -167,6 +172,11 @@ class HomePage extends React.Component {
               onLoadPreviousComments={this.onLoadPreviousComments}
             />
           </>
+        )}
+        {(!firstMatchingSubReedit && searchDispatched) && (
+          <div className="home-page__no-result-label">
+            No results found
+          </div>
         )}
       </>
     );
