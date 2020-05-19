@@ -19,13 +19,13 @@
 }
 
 .comment-item__left-side {
-  min-width: 70px;
-  width: 70px;
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   background-color: $manganese-blue;
   color: $white;
+  width: 50px;
+  min-width: 50px;
 }
 
 .comment-item__author {
@@ -62,9 +62,27 @@
   max-height: 70px;
   overflow-y: auto;
   margin-bottom: 10px;
+  display: none;
 
   p {
     margin: 0;
     padding: 1px 0;
+  }
+}
+
+@media (min-width: 350px) {
+  .comment-item__left-side {
+    display: flex;
+  }
+}
+
+@media (min-width: 650px) {
+  .comment-item__self-text {
+    display: block;
+  }
+
+  .comment-item__left-side {
+    min-width: 70px;
+    width: 70px;
   }
 }
