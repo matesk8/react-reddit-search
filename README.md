@@ -13,8 +13,7 @@ This will start the app on: [http://localhost:3000](http://localhost:3000)
 ## Starting the application - on a different port
 Because the RedditAPI requires clients to use OAuth, the redirect path on Reddit must match the localhost path.
 
-To start the app on a different port:
-Open the
+To start the app on a different port, open the
 ##### `package.json`
 and change the
 ##### `"start": "react-scripts start",`
@@ -28,10 +27,7 @@ Create an app, for the type select `installed` we're using the implicit flow, an
 
 Now open the
 ##### `src/config/reddit.config.json`
-and change the
-##### `"appId: 'khPBf6R-M0yLkw'`
-##### `"redirectURI: 'http://localhost:3000/home'`
-to
+and change to
 ##### `"appId: '[YOUR_APP_ID]'`
 ##### `"redirectURI: 'http://localhost:[YOUR_PORT]/home'`
 
