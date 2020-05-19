@@ -24,20 +24,3 @@
   border-radius: 4px;
   margin-bottom: 8px;
 }
-
-.search-form__button {
-  font-size: 16px;
-  color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
-  border-radius: 4px;
-  padding: 6px;
-  align-self: flex-start;
-
-  &:hover {
-    cursor: pointer;
-    color: #fff;
-    background-color: #0069d9;
-    border-color: #0062cc;
-  }
-}

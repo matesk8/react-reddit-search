@@ -49,7 +49,7 @@ class SearchForm extends React.PureComponent {
             placeholder="Enter Subreddit name..."
           />
           <button
-            className="search-form__button"
+            className="primary-button"
             type="submit"
           >
             Find Subreddit

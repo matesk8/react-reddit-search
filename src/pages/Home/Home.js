@@ -155,29 +155,31 @@ class HomePage extends React.Component {
 
     return (
       <>
-        <SearchForm
-          onSearchValueChange={this.onSearchValueChange}
-          onSearch={this.onSearch}
-        />
-        {firstMatchingSubReedit && (
-          <>
-            <SubRedditHeader
-              subReddit={firstMatchingSubReedit}
-            />
-            <CommentList
-              comments={currentPageSubRedditComments.data}
-              currentPage={currentPage}
-              isLastPage={isLastPage}
-              onLoadNextComments={this.onLoadNextComments}
-              onLoadPreviousComments={this.onLoadPreviousComments}
-            />
-          </>
-        )}
-        {(!firstMatchingSubReedit && searchDispatched) && (
-          <div className="home-page__no-result-label">
-            No results found
-          </div>
-        )}
+        <div className="home-page">
+          <SearchForm
+            onSearchValueChange={this.onSearchValueChange}
+            onSearch={this.onSearch}
+          />
+          {firstMatchingSubReedit && (
+            <>
+              <SubRedditHeader
+                subReddit={firstMatchingSubReedit}
+              />
+              <CommentList
+                comments={currentPageSubRedditComments.data}
+                currentPage={currentPage}
+                isLastPage={isLastPage}
+                onLoadNextComments={this.onLoadNextComments}
+                onLoadPreviousComments={this.onLoadPreviousComments}
+              />
+            </>
+          )}
+          {(!firstMatchingSubReedit && searchDispatched) && (
+            <div className="home-page__no-result-label">
+              No results found
+            </div>
+          )}
+        </div>
       </>
     );
   }
