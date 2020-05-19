@@ -1,4 +1,5 @@
 import React from 'react';
+import './Login.scss';
 import { redditConfig } from '../../config/reddit.config';
 import { generateQueryString } from '../../utils/queryGenerator.util';
 import { clearLocalStorageValue, setLocalStorageValue } from '../../utils/localStorage.util';
@@ -35,13 +36,16 @@ class LoginPage extends React.Component {
   render() {
     return (
       <>
-        <button
-          type="button"
-          aria-label="Log in to Reddit"
-          onClick={this.onLoginClick}
-        >
-          Log in to Reddit
-        </button>
+        <div className="login-page">
+          <button
+            className="primary-button"
+            type="button"
+            aria-label="Log in to Reddit"
+            onClick={this.onLoginClick}
+          >
+            Log with Reddit Account
+          </button>
+        </div>
       </>
     );
   }
