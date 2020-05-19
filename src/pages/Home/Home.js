@@ -17,7 +17,7 @@ class HomePage extends React.Component {
     this.state = {
       redditAccessToken: null,
       searchValue: '',
-      firstMatchingSubReedit: null,
+      firstMatchingSubReddit: null,
       subRedditCommentsMap: {},
       currentPageSubRedditComments: {},
       currentPage: 1,
@@ -71,7 +71,7 @@ class HomePage extends React.Component {
   async onSearch() {
     this.setState({ isLoading: true });
     const { showNotification } = this.props;
-    const { redditAccessToken, searchValue, currentPage } = this.state;
+    const { redditAccessToken, searchValue } = this.state;
 
     try {
       const subRedditResponse = await searchForSubReddit({
@@ -82,23 +82,24 @@ class HomePage extends React.Component {
       const subRedditList = (subRedditResponse.data || {}).children;
       if (!(subRedditList || []).length) {
         this.setState({
-          firstMatchingSubReedit: null,
+          firstMatchingSubReddit: null,
           searchDispatched: true,
         });
         return;
       }
 
-      const firstMatchingSubReedit = subRedditList[0];
-      const subRedditUrl = firstMatchingSubReedit.data.url;
+      const firstMatchingSubReddit = subRedditList[0];
+      const subRedditUrl = firstMatchingSubReddit.data.url;
       const subRedditComments = await fetchSubRedditPosts({
         authToken: redditAccessToken,
         subRedditUrl,
       });
 
       this.setState({
-        firstMatchingSubReedit,
+        firstMatchingSubReddit,
+        currentPage: 1,
         subRedditCommentsMap: {
-          [currentPage]: subRedditComments
+          1: subRedditComments
         },
         currentPageSubRedditComments: subRedditComments,
         searchDispatched: true,
@@ -112,8 +113,9 @@ class HomePage extends React.Component {
   }
 
   async onLoadPreviousComments() {
-    const { currentPage, subRedditCommentsMap } = this.state;
+    const { currentPage, subRedditCommentsMap, isLoading } = this.state;
     const previousPageNumber = currentPage - 1;
+    if (isLoading || previousPageNumber < 1) { return; }
     this.setState({
       currentPage: previousPageNumber,
       currentPageSubRedditComments: subRedditCommentsMap[previousPageNumber],
@@ -123,13 +125,15 @@ class HomePage extends React.Component {
   async onLoadNextComments() {
     const { showNotification } = this.props;
     const {
-      firstMatchingSubReedit,
+      firstMatchingSubReddit,
       redditAccessToken,
       subRedditCommentsMap,
       currentPageSubRedditComments,
       currentPage,
+      isLoading,
     } = this.state;
-
+    const isLastPage = !(currentPageSubRedditComments.data || {}).after;
+    if (isLoading || isLastPage) { return; }
     const nextPageNumber = currentPage + 1;
     const isNextPageFetchedAlready = !!subRedditCommentsMap[nextPageNumber];
 
@@ -145,7 +149,7 @@ class HomePage extends React.Component {
       this.setState({ isLoading: true });
       const nextComments = await fetchSubRedditPosts({
         authToken: redditAccessToken,
-        subRedditUrl: firstMatchingSubReedit.data.url,
+        subRedditUrl: firstMatchingSubReddit.data.url,
         after: currentPageSubRedditComments.data.after,
       });
 
@@ -168,12 +172,13 @@ class HomePage extends React.Component {
   render() {
     const {
       searchDispatched,
-      firstMatchingSubReedit,
+      firstMatchingSubReddit,
       currentPageSubRedditComments,
       currentPage,
       isLoading,
     } = this.state;
-    const isLastPage = !(currentPageSubRedditComments.data || {}).after;
+    const currentPageSubRedditCommentsData = (currentPageSubRedditComments || {}).data;
+    const isLastPage = !(currentPageSubRedditCommentsData || {}).after;
 
     return (
       <>
@@ -187,14 +192,14 @@ class HomePage extends React.Component {
               className="home-page__loader"
             />
           )}
-          {firstMatchingSubReedit && (
+          {firstMatchingSubReddit && currentPageSubRedditCommentsData && (
             <>
               <SubRedditHeader
-                subReddit={firstMatchingSubReedit}
+                subReddit={firstMatchingSubReddit}
               />
               <CommentList
                 isLoading={isLoading}
-                comments={currentPageSubRedditComments.data}
+                comments={currentPageSubRedditCommentsData}
                 currentPage={currentPage}
                 isLastPage={isLastPage}
                 onLoadNextComments={this.onLoadNextComments}
@@ -202,7 +207,7 @@ class HomePage extends React.Component {
               />
             </>
           )}
-          {(!firstMatchingSubReedit && searchDispatched) && (
+          {(!firstMatchingSubReddit && searchDispatched) && (
             <div className="home-page__no-result-label">
               No results found
             </div>
