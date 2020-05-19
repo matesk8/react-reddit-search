@@ -1,17 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './Comment.scss';
+import { getCreatedTimeAgoText, unixTimeStampToMilliseconds } from '../../utils/time.util';
 
 const ReactMarkdown = require('react-markdown');
 
 function Comment({ comment }) {
   const commentData = comment.data;
+  const createdDateInMilliseconds = unixTimeStampToMilliseconds(commentData.created_utc);
+  const createdDate = new Date(createdDateInMilliseconds);
+  const createdTimeText = getCreatedTimeAgoText(Date.now(), createdDate);
+
   const zerWidthSpaceCharacters = '&#x200B;';
   const selfTextWithoutZeroWidth = (commentData.selftext || '')
     .replace(zerWidthSpaceCharacters, '');
 
   const postedByPrefix = commentData.crosspost_parent ? 'Crossposted by' : 'Posted by';
-  const postedByText = `${postedByPrefix}: ${commentData.author}`;
+  const postedByText = `${postedByPrefix}: ${commentData.author} ${createdTimeText}`;
 
   return (
     <>
