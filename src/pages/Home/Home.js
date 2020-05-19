@@ -9,6 +9,7 @@ import CommentList from '../../components/CommentList/CommentList';
 import { getLocalStorageValue, setLocalStorageValue } from '../../utils/localStorage.util';
 import { localStorageKeys } from '../../constants/localStorage.constants';
 import PropTypes from 'prop-types';
+import Loader from '../../components/Loader/Loader';
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class HomePage extends React.Component {
       currentPageSubRedditComments: {},
       currentPage: 1,
       searchDispatched: false,
+      isLoading: false,
     };
 
     this.onSearchValueChange = this.onSearchValueChange.bind(this);
@@ -30,7 +32,7 @@ class HomePage extends React.Component {
   }
 
   componentDidMount() {
-    const { history, onSessionExpired } = this.props;
+    const { history, showNotification } = this.props;
     const cachedSessionId = getLocalStorageValue(localStorageKeys.sessionId);
     const cachedSessionStartTime = getLocalStorageValue(localStorageKeys.sessionStartTime);
     const sessionStartDate = cachedSessionStartTime ? new Date(cachedSessionStartTime) : new Date();
@@ -55,7 +57,7 @@ class HomePage extends React.Component {
     sessionExpiryTime.setHours(sessionStartDate.getHours() + 1);
     const timeUntilSessionExpiry = Math.abs(sessionExpiryTime - Date.now());
     setTimeout(() => {
-      onSessionExpired();
+      showNotification('info', 'Session Expired');
       history.push('/login');
     }, timeUntilSessionExpiry);
   }
@@ -67,36 +69,46 @@ class HomePage extends React.Component {
   }
 
   async onSearch() {
+    this.setState({ isLoading: true });
+    const { showNotification } = this.props;
     const { redditAccessToken, searchValue, currentPage } = this.state;
-    const subRedditResponse = await searchForSubReddit({
-      authToken: redditAccessToken,
-      subRedditName: searchValue,
-    });
 
-    const subRedditList = (subRedditResponse.data || {}).children;
-    if (!(subRedditList || []).length) {
+    try {
+      const subRedditResponse = await searchForSubReddit({
+        authToken: redditAccessToken,
+        subRedditName: searchValue,
+      });
+
+      const subRedditList = (subRedditResponse.data || {}).children;
+      if (!(subRedditList || []).length) {
+        this.setState({
+          firstMatchingSubReedit: null,
+          searchDispatched: true,
+        });
+        return;
+      }
+
+      const firstMatchingSubReedit = subRedditList[0];
+      const subRedditUrl = firstMatchingSubReedit.data.url;
+      const subRedditComments = await fetchSubRedditPosts({
+        authToken: redditAccessToken,
+        subRedditUrl,
+      });
+
       this.setState({
-        firstMatchingSubReedit: null,
+        firstMatchingSubReedit,
+        subRedditCommentsMap: {
+          [currentPage]: subRedditComments
+        },
+        currentPageSubRedditComments: subRedditComments,
         searchDispatched: true,
       });
-      return;
+    } catch (error) {
+      console.log(error);
+      showNotification('error', 'Error fetching data');
+    } finally {
+      this.setState({ isLoading: false });
     }
-
-    const firstMatchingSubReedit = subRedditList[0];
-    const subRedditUrl = firstMatchingSubReedit.data.url;
-    const subRedditComments = await fetchSubRedditPosts({
-      authToken: redditAccessToken,
-      subRedditUrl,
-    });
-
-    this.setState({
-      firstMatchingSubReedit,
-      subRedditCommentsMap: {
-        [currentPage]: subRedditComments
-      },
-      currentPageSubRedditComments: subRedditComments,
-      searchDispatched: true,
-    });
   }
 
   async onLoadPreviousComments() {
@@ -109,6 +121,7 @@ class HomePage extends React.Component {
   }
 
   async onLoadNextComments() {
+    const { showNotification } = this.props;
     const {
       firstMatchingSubReedit,
       redditAccessToken,
@@ -128,20 +141,28 @@ class HomePage extends React.Component {
       return;
     }
 
-    const nextComments = await fetchSubRedditPosts({
-      authToken: redditAccessToken,
-      subRedditUrl: firstMatchingSubReedit.data.url,
-      after: currentPageSubRedditComments.data.after,
-    });
+    try {
+      this.setState({ isLoading: true });
+      const nextComments = await fetchSubRedditPosts({
+        authToken: redditAccessToken,
+        subRedditUrl: firstMatchingSubReedit.data.url,
+        after: currentPageSubRedditComments.data.after,
+      });
 
-    this.setState({
-      subRedditCommentsMap: {
-        ...subRedditCommentsMap,
-        [nextPageNumber]: nextComments,
-      },
-      currentPageSubRedditComments: nextComments,
-      currentPage: nextPageNumber,
-    });
+      this.setState({
+        subRedditCommentsMap: {
+          ...subRedditCommentsMap,
+          [nextPageNumber]: nextComments,
+        },
+        currentPageSubRedditComments: nextComments,
+        currentPage: nextPageNumber,
+      });
+    } catch (error) {
+      console.log(error);
+      showNotification('error', 'Error fetching data');
+    } finally {
+      this.setState({ isLoading: false });
+    }
   }
 
   render() {
@@ -150,6 +171,7 @@ class HomePage extends React.Component {
       firstMatchingSubReedit,
       currentPageSubRedditComments,
       currentPage,
+      isLoading,
     } = this.state;
     const isLastPage = !(currentPageSubRedditComments.data || {}).after;
 
@@ -160,12 +182,18 @@ class HomePage extends React.Component {
             onSearchValueChange={this.onSearchValueChange}
             onSearch={this.onSearch}
           />
+          { isLoading && (
+            <Loader
+              className="home-page__loader"
+            />
+          )}
           {firstMatchingSubReedit && (
             <>
               <SubRedditHeader
                 subReddit={firstMatchingSubReedit}
               />
               <CommentList
+                isLoading={isLoading}
                 comments={currentPageSubRedditComments.data}
                 currentPage={currentPage}
                 isLastPage={isLastPage}
@@ -186,7 +214,7 @@ class HomePage extends React.Component {
 }
 
 HomePage.propTypes = {
-  onSessionExpired: PropTypes.func.isRequired,
+  showNotification: PropTypes.func.isRequired,
 };
 
 export default HomePage;

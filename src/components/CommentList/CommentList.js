@@ -23,7 +23,7 @@ class CommentList extends React.Component {
   }
 
   render() {
-    const { comments, currentPage, isLastPage } = this.props;
+    const { comments, currentPage, isLastPage, isLoading } = this.props;
     const commentItems = comments.children.map((comment) => (
       <Comment
         key={comment.data.id}
@@ -33,6 +33,7 @@ class CommentList extends React.Component {
 
     return (
       <>
+        { isLoading && <div className="comment-list__loading-overlay" /> }
         <div className="comment-list__container">
           <ul className="comment-list">
             {commentItems}
@@ -73,6 +74,7 @@ CommentList.propTypes = {
   onLoadPreviousComments: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   isLastPage: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default CommentList;
