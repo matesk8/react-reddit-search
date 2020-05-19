@@ -69,9 +69,10 @@ class HomePage extends React.Component {
   }
 
   async onSearch() {
-    this.setState({ isLoading: true });
     const { showNotification } = this.props;
-    const { redditAccessToken, searchValue } = this.state;
+    const { redditAccessToken, searchValue, isLoading } = this.state;
+    if (isLoading) { return; }
+    this.setState({ isLoading: true });
 
     try {
       const subRedditResponse = await searchForSubReddit({

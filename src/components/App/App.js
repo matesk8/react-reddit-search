@@ -39,7 +39,7 @@ class App extends React.Component {
               )}
             />
             <Route
-              path="/"
+              path={['/', '/login']}
               render={(props) => <LoginPage {...props} />}
             />
           </Switch>
