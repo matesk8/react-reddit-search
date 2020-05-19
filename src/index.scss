@@ -1,3 +1,23 @@
+$white: #fff;
+$black: #000;
+$dark-blue: #0057e7;
+$link-blue: #3f9ade;
+$cobalt-blue: #33A8FF;
+$manganese-blue: #66beff;
+$powder-blue: #E6F5FF;
+$pale-celestine: #F3FAFF;
+$light-grey: #e2e6ea;
+$light-black: #212529;
+$input-border-color: #ced4da;
+$dark-purple: #551a8b;
+$header-white: #fafafa;
+$header-border-color: #CCC;
+$reddit-blue: #0079d3;
+$dark-grey: #888;
+$primary-blue: #007bff;
+$primary-blue-dark: #0069d9;
+$primary-blue-dark-border: #0062cc;
+
 $search-from-height: 98px;
 $header-height: 106px;
 $list-actions-height: 30px;
@@ -17,17 +37,17 @@ body {
 
 .primary-button {
   font-size: 16px;
-  color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  color: $white;
+  background-color: $primary-blue;
+  border-color: $primary-blue;
   border-radius: 4px;
   padding: 6px 12px;
   align-self: flex-start;
 
   &:hover {
     cursor: pointer;
-    color: #fff;
-    background-color: #0069d9;
-    border-color: #0062cc;
+    color: $white;
+    background-color: $primary-blue-dark;
+    border-color: $primary-blue-dark-border;
   }
 }
