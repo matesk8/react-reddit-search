@@ -8,11 +8,11 @@ import 'react-toastify/dist/ReactToastify.css';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.showSessionExpiredNotification = this.showSessionExpiredNotification.bind(this);
+    this.showNotification = this.showNotification.bind(this);
   }
 
-  showSessionExpiredNotification() {
-    toast.info('Session Expired', {
+  showNotification(notificationType, message) {
+    toast[notificationType](message, {
       position: 'bottom-center',
       autoClose: 5000,
       hideProgressBar: true,
@@ -34,7 +34,7 @@ class App extends React.Component {
               render={(props) => (
                 <HomePage
                   {...props}
-                  onSessionExpired={this.showSessionExpiredNotification}
+                  showNotification={this.showNotification}
                 />
               )}
             />
