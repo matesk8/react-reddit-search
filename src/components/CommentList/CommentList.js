@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './CommentList.scss';
+import './CommentList.scoped.scss';
 import Comment from '../Comment/Comment';
 
 const classNames = require('classnames');

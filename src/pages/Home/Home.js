@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import './Home.scss';
+import './Home.scoped.scss';
 import { getHashParameters } from '../../utils/hashParser.util';
 import { fetchSubRedditPosts, searchForSubReddit } from '../../services/reddit.service';
 import SearchForm from '../../components/SearchForm/SearchForm';

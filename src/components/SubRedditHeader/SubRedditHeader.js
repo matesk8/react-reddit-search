@@ -1,5 +1,5 @@
 import React from 'react';
-import './SubRedditHeader.scss';
+import './SubRedditHeader.scoped.scss';
 import PropTypes from 'prop-types';
 import { ReactComponent as SubRedditIcon } from '../../assets/subredditIcon.svg';
 import { getSubRedditAgeText, getSubscribersText } from '../../utils/reddit.util';

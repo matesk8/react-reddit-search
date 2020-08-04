@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './Comment.scss';
+import './Comment.scoped.scss';
 import { getCreatedTimeAgoText, unixTimeStampToMilliseconds } from '../../utils/time.util';
 
 const ReactMarkdown = require('react-markdown');

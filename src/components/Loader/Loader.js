@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReactComponent as LoadingCircleSVG } from '../../assets/loader.svg';
-import './Loader.scss';
+import './Loader.scoped.scss';
 
 function Loader() {
   return (

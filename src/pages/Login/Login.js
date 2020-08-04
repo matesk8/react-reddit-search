@@ -1,5 +1,5 @@
 import React from 'react';
-import './Login.scss';
+import './Login.scoped.scss';
 import { redditConfig } from '../../config/reddit.config';
 import { generateQueryString } from '../../utils/queryGenerator.util';
 import { clearLocalStorageValue, setLocalStorageValue } from '../../utils/localStorage.util';

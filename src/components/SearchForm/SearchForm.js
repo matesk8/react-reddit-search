@@ -1,5 +1,5 @@
 import React from 'react';
-import './SearchForm.scss';
+import './SearchForm.scoped.scss';
 import PropTypes from 'prop-types';
 
 class SearchForm extends React.PureComponent {
